@@ -7,6 +7,8 @@ namespace ChessProto
 	{
 		[Header("Cell Placement Variables")]
 		[SerializeField] private Cell _cell = null;
+		[SerializeField] private Color _firstColor = Color.white;
+		[SerializeField] private Color _secondColor = Color.white;
 		[SerializeField] [Range(-1024, 1024)] private int _firstCellPositionX = 0;
 		[SerializeField] [Range(-1024, 1024)] private int _firstCellPositionY = 0;
 		[SerializeField] [Range(-2000, 2000)] private int _cellSpawnPositionX = -2000;
@@ -57,6 +59,12 @@ namespace ChessProto
 							initialCellPosition.y - y * CellZise);
 
 					Cell cell = Instantiate(_cell, spawnPosition, Quaternion.identity, _cellRoot);
+
+					cell.Column = BoardSize - x;
+					cell.Row = y + 1;
+
+					cell.SetColor((x + y) % 2 == 1 ? _firstColor : _secondColor);
+
 					cell.transform
 						.DOLocalMove(cellPosition, _cellMovementDuration)
 						.SetEase(_cellMovementEase)
