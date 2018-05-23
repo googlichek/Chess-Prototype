@@ -2,7 +2,7 @@
 
 namespace ChessProto
 {
-	public class Board : MonoBehaviour
+	public class CellRoot : MonoBehaviour
 	{
 	}
 }
