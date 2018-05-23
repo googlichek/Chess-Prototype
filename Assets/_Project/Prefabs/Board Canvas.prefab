@@ -87,6 +87,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cell: {fileID: 114187889131709862, guid: d2a597e0d1975304eb14bdc5c704a367, type: 2}
+  _firstColor: {r: 0.76367813, g: 0.9411765, b: 0.7647059, a: 1}
+  _secondColor: {r: 0.5882353, g: 0.54901963, b: 0.54901963, a: 1}
   _firstCellPositionX: -576
   _firstCellPositionY: 448
   _cellSpawnPositionX: -2000
