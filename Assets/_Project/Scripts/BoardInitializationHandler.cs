@@ -5,10 +5,11 @@ using UnityEngine;
 
 namespace ChessProto
 {
-	public class BoardHandler : MonoBehaviour
+	public class BoardInitializationHandler : MonoBehaviour
 	{
-		private delegate void OnAnimationComplete();
-		private event OnAnimationComplete StartCreationOfSides;
+		public delegate void OnAnimationComplete();
+		public event OnAnimationComplete EnablePieceMovementEvent;
+		private event OnAnimationComplete StartCreationOfSidesEvent;
 
 		[Header("Cell Placement Variables")]
 		[SerializeField] private Cell _cell = null;
@@ -62,7 +63,7 @@ namespace ChessProto
 		private List<IChessPiece> _enemyPieces = new List<IChessPiece>();
 		private List<IChessPiece> _playerPieces = new List<IChessPiece>();
 
-		private Sequence _sequence = null;
+		private Sequence _animationSequence = null;
 
 		void Start()
 		{
@@ -71,13 +72,13 @@ namespace ChessProto
 			_playerRoot = FindObjectOfType<PlayerPiecesRoot>().transform;
 
 			CreateBoard();
-			StartCreationOfSides += CreatePieces;
+			StartCreationOfSidesEvent += CreatePieces;
 		}
 
 		private void CreateBoard()
 		{
-			_sequence = DOTween.Sequence();
-			_sequence.Pause();
+			_animationSequence = DOTween.Sequence();
+			_animationSequence.Pause();
 
 			var initialSpawnPosition =
 				new Vector2(_cellSpawnPositionX, _cellSpawnPositionY);
@@ -105,21 +106,17 @@ namespace ChessProto
 							.DOLocalMove(cellPosition, _cellMovementDuration)
 							.SetEase(_cellMovementEase)
 							.SetDelay((x + y) * _cellMovementDelay);
-					_sequence.Insert(0, twener);
+					_animationSequence.Insert(0, twener);
 				}
 
-				_sequence.Play().OnComplete(() =>
-				{
-					if (StartCreationOfSides != null) StartCreationOfSides();
-					_sequence = null;
-				});
+				_animationSequence.Play().OnComplete(() => CompleteAnimationEvent(StartCreationOfSidesEvent));
 			}
 		}
 
 		private void CreatePieces()
 		{
-			_sequence = DOTween.Sequence();
-			_sequence.Pause();
+			_animationSequence = DOTween.Sequence();
+			_animationSequence.Pause();
 
 			CreateSide(
 				_enemyPieces,
@@ -137,7 +134,7 @@ namespace ChessProto
 				PlayerOfficerColumnIndex,
 				-_spawnOffset);
 
-			_sequence.Play();
+			_animationSequence.Play().OnComplete(() => CompleteAnimationEvent(EnablePieceMovementEvent));
 		}
 
 		private void CreateSide(
@@ -160,7 +157,7 @@ namespace ChessProto
 					.ToList()
 					.OrderBy(x => x.Column);
 
-			int index = 0;
+			var index = 0;
 			foreach (var cell in pawnPositions)
 			{
 				InitializePiece(
@@ -246,7 +243,13 @@ namespace ChessProto
 					.DOLocalMove(position, _pieceMovementDuration)
 					.SetEase(_pieceMovementEase)
 					.SetDelay(_pieceMovementDelay * delayMultiplier);
-			_sequence.Insert(0, tweener);
+			_animationSequence.Insert(0, tweener);
+		}
+
+		private void CompleteAnimationEvent(OnAnimationComplete animationCompleteEvent)
+		{
+			if (animationCompleteEvent != null) animationCompleteEvent();
+			_animationSequence = null;
 		}
 	}
 }
