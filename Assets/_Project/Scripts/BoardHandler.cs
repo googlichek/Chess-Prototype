@@ -62,6 +62,8 @@ namespace ChessProto
 		private List<IChessPiece> _enemyPieces = new List<IChessPiece>();
 		private List<IChessPiece> _playerPieces = new List<IChessPiece>();
 
+		private Sequence _sequence = null;
+
 		void Start()
 		{
 			_cellRoot = FindObjectOfType<CellRoot>().transform;
@@ -74,13 +76,13 @@ namespace ChessProto
 
 		private void CreateBoard()
 		{
+			_sequence = DOTween.Sequence();
+			_sequence.Pause();
+
 			var initialSpawnPosition =
 				new Vector2(_cellSpawnPositionX, _cellSpawnPositionY);
 			var initialCellPosition =
 				new Vector3(_firstCellPositionX, _firstCellPositionY);
-
-			var sequence = DOTween.Sequence();
-			sequence.Pause();
 
 			for (int y = 0; y < BoardSize; y++)
 			{
@@ -103,18 +105,22 @@ namespace ChessProto
 							.DOLocalMove(cellPosition, _cellMovementDuration)
 							.SetEase(_cellMovementEase)
 							.SetDelay((x + y) * _cellMovementDelay);
-					sequence.Insert(0, twener);
+					_sequence.Insert(0, twener);
 				}
 
-				sequence.Play().OnComplete(() =>
+				_sequence.Play().OnComplete(() =>
 				{
 					if (StartCreationOfSides != null) StartCreationOfSides();
+					_sequence = null;
 				});
 			}
 		}
 
 		private void CreatePieces()
 		{
+			_sequence = DOTween.Sequence();
+			_sequence.Pause();
+
 			CreateSide(
 				_enemyPieces,
 				_enemyRoot,
@@ -130,6 +136,8 @@ namespace ChessProto
 				PlayerPawnColumnIndex,
 				PlayerOfficerColumnIndex,
 				-_spawnOffset);
+
+			_sequence.Play();
 		}
 
 		private void CreateSide(
@@ -212,7 +220,7 @@ namespace ChessProto
 			var piece = SpawnPiece(root, referencePiece, sideColor, spawnPosition);
 			sidePieces.Add(piece);
 
-			MovePiece(piece, endPosition, index);
+			UpdateMovementAnimationSequence(piece, endPosition, index);
 		}
 
 		private ChessPiece SpawnPiece(
@@ -228,12 +236,17 @@ namespace ChessProto
 			return piece;
 		}
 
-		private void MovePiece(ChessPiece piece, Vector2 position, int delayMultiplier)
+		private void UpdateMovementAnimationSequence(
+			ChessPiece piece,
+			Vector2 position,
+			int delayMultiplier)
 		{
-			piece.transform
-				.DOLocalMove(position, _pieceMovementDuration)
-				.SetEase(_pieceMovementEase)
-				.SetDelay(_pieceMovementDelay * delayMultiplier);
+			var tweener =
+				piece.transform
+					.DOLocalMove(position, _pieceMovementDuration)
+					.SetEase(_pieceMovementEase)
+					.SetDelay(_pieceMovementDelay * delayMultiplier);
+			_sequence.Insert(0, tweener);
 		}
 	}
 }
