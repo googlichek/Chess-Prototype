@@ -49,8 +49,6 @@ namespace ChessProto
 				Vector2 spawnPosition =
 					new Vector2(initialSpawnPosition.x, initialSpawnPosition.y - y * CellZise);
 
-				Debug.Log(spawnPosition);
-
 				for (int x = 0; x < BoardSize; x++)
 				{
 					Vector2 cellPosition =

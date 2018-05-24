@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 114640398083483398}
   - component: {fileID: 114336672652705342}
   m_Layer: 5
-  m_Name: Board Canvas
+  m_Name: Board Handler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
