@@ -56,7 +56,7 @@ namespace ChessProto
 
 		private Transform _cellRoot = null;
 		private Transform _enemyRoot = null;
-		private Transform _playerPiecesRoot = null;
+		private Transform _playerRoot = null;
 
 		private readonly List<Cell> _cells = new List<Cell>();
 		private List<IChessPiece> _enemyPieces = new List<IChessPiece>();
@@ -66,7 +66,7 @@ namespace ChessProto
 		{
 			_cellRoot = FindObjectOfType<CellRoot>().transform;
 			_enemyRoot = FindObjectOfType<EnemyPiecesRoot>().transform;
-			_playerPiecesRoot = FindObjectOfType<PlayerPiecesRoot>().transform;
+			_playerRoot = FindObjectOfType<PlayerPiecesRoot>().transform;
 
 			CreateBoard();
 			StartCreationOfSides += CreatePieces;
@@ -125,7 +125,7 @@ namespace ChessProto
 
 			CreateSide(
 				_playerPieces,
-				_playerPiecesRoot,
+				_playerRoot,
 				SideColor.White,
 				PlayerPawnColumnIndex,
 				PlayerOfficerColumnIndex,
@@ -156,7 +156,7 @@ namespace ChessProto
 			foreach (var cell in pawnPositions)
 			{
 				InitializePiece(
-					_enemyPieces, _enemyRoot, cell, _pawn, sideColor, spawnOffset, index);
+					sidePieces, root, cell, _pawn, sideColor, spawnOffset, index);
 				index++;
 			}
 
@@ -167,29 +167,29 @@ namespace ChessProto
 					case RookIndexFirst:
 					case RookIndexSecond:
 						InitializePiece(
-							_enemyPieces, _enemyRoot, cell, _rook, sideColor, spawnOffset, index);
+							sidePieces, root, cell, _rook, sideColor, spawnOffset, index);
 						break;
 
 					case KnightIndexFirst:
 					case KnightIndexSecond:
 						InitializePiece(
-							_enemyPieces, _enemyRoot, cell, _knight, sideColor, spawnOffset, index);
+							sidePieces, root, cell, _knight, sideColor, spawnOffset, index);
 						break;
 
 					case BishopIndexFirst:
 					case BishopIndexSecond:
 						InitializePiece(
-							_enemyPieces, _enemyRoot, cell, _bishop, sideColor, spawnOffset, index);
+							sidePieces, root, cell, _bishop, sideColor, spawnOffset, index);
 						break;
 
 					case KingIndex:
 						InitializePiece(
-							_enemyPieces, _enemyRoot, cell, _king, sideColor, spawnOffset, index);
+							sidePieces, root, cell, _king, sideColor, spawnOffset, index);
 						break;
 
 					case QueenIndex:
 						InitializePiece(
-							_enemyPieces, _enemyRoot, cell, _queen, sideColor, spawnOffset, index);
+							sidePieces, root, cell, _queen, sideColor, spawnOffset, index);
 						break;
 				}
 
