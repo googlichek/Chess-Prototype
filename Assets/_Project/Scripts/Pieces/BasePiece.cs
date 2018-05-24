@@ -9,15 +9,25 @@ namespace ChessProto
 		public delegate void OnChessPieceClicked(BasePiece piece);
 		public event OnChessPieceClicked ChessPieceClickedEvent;
 
+		public Side Side { get { return _side; } }
+		public int Row { get { return _row; } }
+		public int Column { get { return _column; } }
+
 		[SerializeField] private Sprite _whitePiece = null;
 		[SerializeField] private Sprite _blackPiece = null;
 
-		public void SetSideColor(Side side)
+		private Side _side = Side.None;
+		private int _row = 0;
+		private int _column = 0;
+
+		public void SetSide(Side side)
 		{
+			_side = side;
+
 			Image image = GetComponent<Image>();
 			if (image == null) return;
 
-			switch (side)
+			switch (_side)
 			{
 				case Side.Enemy:
 					image.sprite = _blackPiece;
@@ -28,11 +38,17 @@ namespace ChessProto
 			}
 		}
 
-		public virtual void Move(Side side)
+		public void SetPositionIndexes(int column, int row)
+		{
+			_row = row;
+			_column = column;
+		}
+
+		public virtual void Move()
 		{
 		}
 
-		public virtual void HighlightPositions(Side side)
+		public virtual void HighlightPositions()
 		{
 		}
 

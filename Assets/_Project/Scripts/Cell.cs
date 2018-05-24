@@ -30,7 +30,7 @@ namespace ChessProto
 			_image.color = color;
 		}
 
-		public void SetIndexes(int column, int row)
+		public void SetPositionIndexes(int column, int row)
 		{
 			_row = row;
 			_column = column;

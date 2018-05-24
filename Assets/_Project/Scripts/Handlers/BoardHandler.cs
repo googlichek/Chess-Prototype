@@ -100,7 +100,7 @@ namespace ChessProto
 
 					var cell = Instantiate(_cell, _cellRoot);
 					cell.transform.localPosition = initialSpawnPosition;
-					cell.SetIndexes(BoardSize - y, BoardSize - x);
+					cell.SetPositionIndexes(BoardSize - y, BoardSize - x);
 					cell.SetColor((x + y) % 2 == 1 ? _firstColor : _secondColor);
 
 					GameData.Cells.Add(cell);
@@ -259,23 +259,14 @@ namespace ChessProto
 			var endPosition = cell.transform.localPosition;
 			var spawnPosition = new Vector2(endPosition.x, endPosition.y + spawnOffset);
 
-			var piece = SpawnPiece(root, referencePiece, side, spawnPosition);
+			var piece = Instantiate(referencePiece, root);
+			piece.transform.localPosition = spawnPosition;
+			piece.SetSide(side);
+			piece.SetPositionIndexes(cell.Column, cell.Row);
+
 			sidePieces.Add(piece);
 
 			UpdateMovementAnimationSequence(piece, endPosition, index);
-		}
-
-		private BasePiece SpawnPiece(
-			Transform root,
-			BasePiece referencePiece,
-			Side side,
-			Vector2 position)
-		{
-			var piece = Instantiate(referencePiece, root);
-			piece.transform.localPosition = position;
-			piece.SetSideColor(side);
-
-			return piece;
 		}
 
 		private void UpdateMovementAnimationSequence(
