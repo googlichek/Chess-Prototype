@@ -2,7 +2,11 @@
 {
 	public class Bishop : BasePiece
 	{
-		public override void Move()
+		public override void Move(Side side)
+		{
+		}
+
+		public override void HighlightPositions(Side side)
 		{
 		}
 	}

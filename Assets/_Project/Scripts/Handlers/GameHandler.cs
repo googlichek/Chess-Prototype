@@ -47,17 +47,14 @@ namespace ChessProto
 
 		private void CellClickedEventRecieved(Cell cell)
 		{
-			Debug.Log("From GameHandler");
 		}
 
 		private void EnemyChessPieceClickedEventRecieved(BasePiece piece)
 		{
-			Debug.Log("From GameHandler");
 		}
 
 		private void PlayerChessPieceClickedEventRecieved(BasePiece piece)
 		{
-			Debug.Log("From GameHandler");
 		}
 	}
 }

@@ -12,27 +12,27 @@ namespace ChessProto
 		[SerializeField] private Sprite _whitePiece = null;
 		[SerializeField] private Sprite _blackPiece = null;
 
-		public void SetSideColor(SideColor sideColor)
+		public void SetSideColor(Side side)
 		{
 			Image image = GetComponent<Image>();
 			if (image == null) return;
 
-			switch (sideColor)
+			switch (side)
 			{
-				case SideColor.Black:
+				case Side.Enemy:
 					image.sprite = _blackPiece;
 					break;
-				case SideColor.White:
+				case Side.Player:
 					image.sprite = _whitePiece;
 					break;
 			}
 		}
 
-		public virtual void Move()
+		public virtual void Move(Side side)
 		{
 		}
 
-		public virtual void HighlightPositions()
+		public virtual void HighlightPositions(Side side)
 		{
 		}
 

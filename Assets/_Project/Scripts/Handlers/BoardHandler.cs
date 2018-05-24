@@ -125,7 +125,7 @@ namespace ChessProto
 			CreateSide(
 				GameData.EnemyPieces,
 				_enemyRoot,
-				SideColor.Black,
+				Side.Enemy,
 				EnemyPawnColumnIndex,
 				EnemyOfficerColumnIndex,
 				_spawnOffset);
@@ -133,7 +133,7 @@ namespace ChessProto
 			CreateSide(
 				GameData.PlayerPieces,
 				_playerRoot,
-				SideColor.White,
+				Side.Player,
 				PlayerPawnColumnIndex,
 				PlayerOfficerColumnIndex,
 				-_spawnOffset);
@@ -184,7 +184,7 @@ namespace ChessProto
 		private void CreateSide(
 			List<BasePiece> sidePieces,
 			Transform root,
-			SideColor sideColor,
+			Side side,
 			int pawnPositionColumnIndex,
 			int officerPositionColumnIndex,
 			int spawnOffset)
@@ -205,7 +205,7 @@ namespace ChessProto
 			foreach (var cell in pawnPositions)
 			{
 				InitializePiece(
-					sidePieces, root, cell, _pawn, sideColor, spawnOffset, index);
+					sidePieces, root, cell, _pawn, side, spawnOffset, index);
 				index++;
 			}
 
@@ -216,29 +216,29 @@ namespace ChessProto
 					case RookIndexFirst:
 					case RookIndexSecond:
 						InitializePiece(
-							sidePieces, root, cell, _rook, sideColor, spawnOffset, index);
+							sidePieces, root, cell, _rook, side, spawnOffset, index);
 						break;
 
 					case KnightIndexFirst:
 					case KnightIndexSecond:
 						InitializePiece(
-							sidePieces, root, cell, _knight, sideColor, spawnOffset, index);
+							sidePieces, root, cell, _knight, side, spawnOffset, index);
 						break;
 
 					case BishopIndexFirst:
 					case BishopIndexSecond:
 						InitializePiece(
-							sidePieces, root, cell, _bishop, sideColor, spawnOffset, index);
+							sidePieces, root, cell, _bishop, side, spawnOffset, index);
 						break;
 
 					case KingIndex:
 						InitializePiece(
-							sidePieces, root, cell, _king, sideColor, spawnOffset, index);
+							sidePieces, root, cell, _king, side, spawnOffset, index);
 						break;
 
 					case QueenIndex:
 						InitializePiece(
-							sidePieces, root, cell, _queen, sideColor, spawnOffset, index);
+							sidePieces, root, cell, _queen, side, spawnOffset, index);
 						break;
 				}
 				index++;
@@ -250,7 +250,7 @@ namespace ChessProto
 			Transform root,
 			Cell cell,
 			BasePiece referencePiece,
-			SideColor sideColor,
+			Side side,
 			int spawnOffset,
 			int index)
 		{
@@ -259,7 +259,7 @@ namespace ChessProto
 			var endPosition = cell.transform.localPosition;
 			var spawnPosition = new Vector2(endPosition.x, endPosition.y + spawnOffset);
 
-			var piece = SpawnPiece(root, referencePiece, sideColor, spawnPosition);
+			var piece = SpawnPiece(root, referencePiece, side, spawnPosition);
 			sidePieces.Add(piece);
 
 			UpdateMovementAnimationSequence(piece, endPosition, index);
@@ -268,12 +268,12 @@ namespace ChessProto
 		private BasePiece SpawnPiece(
 			Transform root,
 			BasePiece referencePiece,
-			SideColor sideColor,
+			Side side,
 			Vector2 position)
 		{
 			var piece = Instantiate(referencePiece, root);
 			piece.transform.localPosition = position;
-			piece.SetSideColor(sideColor);
+			piece.SetSideColor(side);
 
 			return piece;
 		}

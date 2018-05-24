@@ -1,9 +1,9 @@
 ﻿namespace ChessProto
 {
-	public enum SideColor
+	public enum Side
 	{
 		None,
-		White,
-		Black
+		Player,
+		Enemy
 	}
 }
