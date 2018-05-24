@@ -6,7 +6,7 @@ namespace ChessProto
 {
 	public class BasePiece : MonoBehaviour, IPointerClickHandler
 	{
-		public delegate void OnChessPieceClicked();
+		public delegate void OnChessPieceClicked(BasePiece piece);
 		public event OnChessPieceClicked ChessPieceClickedEvent;
 
 		[SerializeField] private Sprite _whitePiece = null;
@@ -38,7 +38,7 @@ namespace ChessProto
 
 		public void OnPointerClick(PointerEventData eventData)
 		{
-			Debug.Log(gameObject.name + " was clicked");
+			if (ChessPieceClickedEvent != null) ChessPieceClickedEvent(this);
 		}
 	}
 }

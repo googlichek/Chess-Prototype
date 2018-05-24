@@ -6,6 +6,9 @@ namespace ChessProto
 {
 	public class Cell : MonoBehaviour, IPointerClickHandler
 	{
+		public delegate void OnCellClicked(Cell cell);
+		public event OnCellClicked CellClickedEvent;
+
 		public int Row { get { return _row; } }
 		public int Column { get { return _column; } }
 
@@ -35,7 +38,7 @@ namespace ChessProto
 
 		public void OnPointerClick(PointerEventData eventData)
 		{
-			Debug.Log(gameObject.name + " was clicked");
+			if (CellClickedEvent != null) CellClickedEvent(this);
 		}
 	}
 }
