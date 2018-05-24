@@ -102,6 +102,7 @@ namespace ChessProto
 					cell.transform.localPosition = initialSpawnPosition;
 					cell.SetPositionIndexes(BoardSize - y, BoardSize - x);
 					cell.SetColor((x + y) % 2 == 1 ? _firstColor : _secondColor);
+					cell.Side = Side.Free;
 
 					GameData.Cells.Add(cell);
 
@@ -254,7 +255,7 @@ namespace ChessProto
 			int spawnOffset,
 			int index)
 		{
-			cell.Occupied = true;
+			cell.Side = side;
 
 			var endPosition = cell.transform.localPosition;
 			var spawnPosition = new Vector2(endPosition.x, endPosition.y + spawnOffset);

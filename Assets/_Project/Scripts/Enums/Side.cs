@@ -3,7 +3,8 @@
 	public enum Side
 	{
 		None,
+		Free,
+		Enemy,
 		Player,
-		Enemy
 	}
 }

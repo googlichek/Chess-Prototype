@@ -9,5 +9,7 @@ namespace ChessProto
 		public static List<BasePiece> PlayerPieces;
 
 		public static List<Cell> Cells;
+
+		public static List<Cell> HighlightedCells;
 	}
 }

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -55,6 +57,48 @@ namespace ChessProto
 		public void OnPointerClick(PointerEventData eventData)
 		{
 			if (ChessPieceClickedEvent != null) ChessPieceClickedEvent(this);
+		}
+
+		protected void FindPosition(int column, int row)
+		{
+			var cell =
+				GameData
+					.Cells
+					.FirstOrDefault(
+						x => x.Column == column && x.Row == row && x.Side != _side);
+
+			if (cell == null) return;
+
+			cell.Highlight();
+			GameData.HighlightedCells.Add(cell);
+		}
+
+		protected void FindOpponentPosition(int column, int row, Side original)
+		{
+			var opponent = Side.None;
+
+			switch (original)
+			{
+				case Side.Player:
+					opponent = Side.Enemy;
+					break;
+				case Side.Enemy:
+					opponent = Side.Player;
+					break;
+			}
+
+			if (opponent == Side.None) return;
+
+			var cell =
+				GameData
+					.Cells
+					.FirstOrDefault(
+						x => x.Column == column && x.Row == row && x.Side == opponent);
+
+			if (cell == null) return;
+
+			cell.Highlight();
+			GameData.HighlightedCells.Add(cell);
 		}
 	}
 }
