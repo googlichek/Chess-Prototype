@@ -6,11 +6,14 @@ using UnityEngine.UI;
 
 namespace ChessProto
 {
-	public class BoardInitializationHandler : MonoBehaviour
+	public class BoardHandler : MonoBehaviour
 	{
 		public delegate void OnAnimationComplete();
 		public event OnAnimationComplete EnablePieceMovementEvent;
 		private event OnAnimationComplete StartCreationOfSidesEvent;
+
+		[Header("Temporary Input Blocker")]
+		[SerializeField] private GameObject _protector = null;
 
 		[Header("Cell Placement Variables")]
 		[SerializeField] private Cell _cell = null;
@@ -22,12 +25,12 @@ namespace ChessProto
 		[SerializeField] [Range(-2500, 2500)] private int _cellSpawnPositionY = 0;
 
 		[Header("Piece Placement Variables")]
-		[SerializeField] private ChessPiece _bishop = null;
-		[SerializeField] private ChessPiece _king = null;
-		[SerializeField] private ChessPiece _knight = null;
-		[SerializeField] private ChessPiece _pawn = null;
-		[SerializeField] private ChessPiece _queen = null;
-		[SerializeField] private ChessPiece _rook = null;
+		[SerializeField] private BasePiece _bishop = null;
+		[SerializeField] private BasePiece _king = null;
+		[SerializeField] private BasePiece _knight = null;
+		[SerializeField] private BasePiece _pawn = null;
+		[SerializeField] private BasePiece _queen = null;
+		[SerializeField] private BasePiece _rook = null;
 		[SerializeField] [Range(0, 1000)] private int _spawnOffset = 0;
 
 		[Header("Overall Animation Variables")]
@@ -62,10 +65,6 @@ namespace ChessProto
 		private Transform _cellRoot = null;
 		private Transform _enemyRoot = null;
 		private Transform _playerRoot = null;
-
-		private readonly List<Cell> _cells = new List<Cell>();
-		private List<IChessPiece> _enemyPieces = new List<IChessPiece>();
-		private List<IChessPiece> _playerPieces = new List<IChessPiece>();
 
 		private Sequence _animationSequence = null;
 
@@ -104,7 +103,7 @@ namespace ChessProto
 					cell.SetIndexes(BoardSize - y, BoardSize - x);
 					cell.SetColor((x + y) % 2 == 1 ? _firstColor : _secondColor);
 
-					_cells.Add(cell);
+					GameData.Cells.Add(cell);
 
 					var twener =
 						cell.transform
@@ -124,7 +123,7 @@ namespace ChessProto
 			_animationSequence.Pause();
 
 			CreateSide(
-				_enemyPieces,
+				GameData.EnemyPieces,
 				_enemyRoot,
 				SideColor.Black,
 				EnemyPawnColumnIndex,
@@ -132,7 +131,7 @@ namespace ChessProto
 				_spawnOffset);
 
 			CreateSide(
-				_playerPieces,
+				GameData.PlayerPieces,
 				_playerRoot,
 				SideColor.White,
 				PlayerPawnColumnIndex,
@@ -176,11 +175,14 @@ namespace ChessProto
 			tweener = _startMessage.transform.DOScale(0, 0);
 			_animationSequence.Append(tweener);
 
+			tweener = _protector.transform.DOScale(0, 0);
+			_animationSequence.Append(tweener);
+
 			_animationSequence.Play();
 		}
 
 		private void CreateSide(
-			List<IChessPiece> sidePieces,
+			List<BasePiece> sidePieces,
 			Transform root,
 			SideColor sideColor,
 			int pawnPositionColumnIndex,
@@ -188,13 +190,13 @@ namespace ChessProto
 			int spawnOffset)
 		{
 			var pawnPositions =
-				_cells
+				GameData.Cells
 					.Where(x => x.Column == pawnPositionColumnIndex)
 					.ToList()
 					.OrderBy(x => x.Column);
 
 			var officerPositions =
-				_cells
+				GameData.Cells
 					.Where(x => x.Column == officerPositionColumnIndex)
 					.ToList()
 					.OrderBy(x => x.Column);
@@ -239,20 +241,21 @@ namespace ChessProto
 							sidePieces, root, cell, _queen, sideColor, spawnOffset, index);
 						break;
 				}
-
 				index++;
 			}
 		}
 
 		private void InitializePiece(
-			List<IChessPiece> sidePieces,
+			List<BasePiece> sidePieces,
 			Transform root,
 			Cell cell,
-			ChessPiece referencePiece,
+			BasePiece referencePiece,
 			SideColor sideColor,
 			int spawnOffset,
 			int index)
 		{
+			cell.Occupied = true;
+
 			var endPosition = cell.transform.localPosition;
 			var spawnPosition = new Vector2(endPosition.x, endPosition.y + spawnOffset);
 
@@ -262,9 +265,9 @@ namespace ChessProto
 			UpdateMovementAnimationSequence(piece, endPosition, index);
 		}
 
-		private ChessPiece SpawnPiece(
+		private BasePiece SpawnPiece(
 			Transform root,
-			ChessPiece referencePiece,
+			BasePiece referencePiece,
 			SideColor sideColor,
 			Vector2 position)
 		{
@@ -276,7 +279,7 @@ namespace ChessProto
 		}
 
 		private void UpdateMovementAnimationSequence(
-			ChessPiece piece,
+			BasePiece piece,
 			Vector2 position,
 			int delayMultiplier)
 		{

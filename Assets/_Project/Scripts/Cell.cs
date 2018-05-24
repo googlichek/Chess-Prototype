@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace ChessProto
 {
-	public class Cell : MonoBehaviour
+	public class Cell : MonoBehaviour, IPointerClickHandler
 	{
 		public int Row { get { return _row; } }
 		public int Column { get { return _column; } }
@@ -30,6 +31,11 @@ namespace ChessProto
 		{
 			_row = row;
 			_column = column;
+		}
+
+		public void OnPointerClick(PointerEventData eventData)
+		{
+			Debug.Log(gameObject.name + " was clicked");
 		}
 	}
 }

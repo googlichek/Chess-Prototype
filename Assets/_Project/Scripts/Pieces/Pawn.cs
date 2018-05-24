@@ -1,6 +1,9 @@
 ﻿namespace ChessProto
 {
-	public class Pawn : ChessPiece
+	public class Pawn : BasePiece
 	{
+		public override void Move()
+		{
+		}
 	}
 }
