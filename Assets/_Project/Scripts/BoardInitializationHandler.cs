@@ -2,6 +2,7 @@
 using System.Linq;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ChessProto
 {
@@ -29,7 +30,10 @@ namespace ChessProto
 		[SerializeField] private ChessPiece _rook = null;
 		[SerializeField] [Range(0, 1000)] private int _spawnOffset = 0;
 
-		[Header("Tweening Variables")]
+		[Header("Overall Animation Variables")]
+		[SerializeField] private Text _startMessage = null;
+		[SerializeField] private Ease _startMessageSubsequenceEase = Ease.Linear;
+		[SerializeField] [Range(0, 2)] private float _startMessageSubsequenceDuration = 0f;
 		[SerializeField] private Ease _cellMovementEase = Ease.Linear;
 		[SerializeField] [Range(0, 2)] private float _cellMovementDuration = 0f;
 		[SerializeField] [Range(0, 2)] private float _cellMovementDelay = 0f;
@@ -73,6 +77,7 @@ namespace ChessProto
 
 			CreateBoard();
 			StartCreationOfSidesEvent += CreatePieces;
+			EnablePieceMovementEvent += ShowStartMessage;
 		}
 
 		private void CreateBoard()
@@ -135,6 +140,43 @@ namespace ChessProto
 				-_spawnOffset);
 
 			_animationSequence.Play().OnComplete(() => CompleteAnimationEvent(EnablePieceMovementEvent));
+		}
+
+		private void ShowStartMessage()
+		{
+			_animationSequence = DOTween.Sequence();
+			_animationSequence.Pause();
+
+			var tweener =
+				_startMessage
+					.DOFade(1, _startMessageSubsequenceDuration)
+					.SetEase(_startMessageSubsequenceEase);
+			_animationSequence.Insert(0, tweener);
+
+			tweener =
+				_startMessage.transform
+					.DOScale(1, _startMessageSubsequenceDuration)
+					.SetEase(_startMessageSubsequenceEase);
+			_animationSequence.Insert(0, tweener);
+
+			tweener =
+				_startMessage.transform
+					.DOScale(3, _startMessageSubsequenceDuration)
+					.SetEase(_startMessageSubsequenceEase)
+					.SetDelay(_startMessageSubsequenceDuration);
+			_animationSequence.Append(tweener);
+
+			tweener =
+				_startMessage
+					.DOFade(0, _startMessageSubsequenceDuration)
+					.SetEase(_startMessageSubsequenceEase)
+					.SetDelay(_startMessageSubsequenceDuration);
+			_animationSequence.Join(tweener);
+
+			tweener = _startMessage.transform.DOScale(0, 0);
+			_animationSequence.Append(tweener);
+
+			_animationSequence.Play();
 		}
 
 		private void CreateSide(
