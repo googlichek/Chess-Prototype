@@ -272,9 +272,20 @@ Prefab:
       propertyPath: m_Pivot.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1163303429547060, guid: 6cd2ab1993f079e448a06339688a71ef, type: 2}
-      propertyPath: m_Name
-      value: Board Handler
+    - target: {fileID: 114336672652705342, guid: 6cd2ab1993f079e448a06339688a71ef,
+        type: 2}
+      propertyPath: _pieceMovementEase
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 114336672652705342, guid: 6cd2ab1993f079e448a06339688a71ef,
+        type: 2}
+      propertyPath: _pieceMovementDelay
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114336672652705342, guid: 6cd2ab1993f079e448a06339688a71ef,
+        type: 2}
+      propertyPath: _cellMovementDuration
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 6cd2ab1993f079e448a06339688a71ef, type: 2}
