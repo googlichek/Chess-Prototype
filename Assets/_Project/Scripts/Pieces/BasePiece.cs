@@ -16,6 +16,8 @@ namespace ChessProto
 		public event OnChessPieceMove ChessPieceMoveEndEvent;
 		public event OnChessPieceMove ChessPieceMoveResetEvent;
 
+		protected const int DistanceUnit = GlobalVariables.DistanceUnit;
+
 		public Side Side { get { return _side; } }
 		public int Row { get { return _row; } }
 		public int Column { get { return _column; } }
@@ -94,7 +96,7 @@ namespace ChessProto
 				});
 		}
 
-		public virtual void HighlightPositions()
+		public virtual void FindCellsToHighlight()
 		{
 		}
 
@@ -148,6 +150,30 @@ namespace ChessProto
 			if (cell == null) return;
 
 			GameData.HighlightedCells.Add(cell);
+		}
+
+		protected bool FindPositionWithValidation(int column, int row, Side original)
+		{
+			var opponent = FindOpposingSide(original);
+
+			var cell =
+				GameData
+					.Cells
+					.FirstOrDefault(
+						x =>
+							x.Column == column &&
+							x.Row == row &&
+							(x.Side == opponent || x.Side == Side.Free));
+			if (cell == null) return false;
+
+			if (cell.Side == opponent)
+			{
+				GameData.HighlightedCells.Add(cell);
+				return false;
+			}
+
+			GameData.HighlightedCells.Add(cell);
+			return true;
 		}
 
 		protected void FindOpponentPosition(int column, int row, Side original)

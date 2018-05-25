@@ -45,7 +45,7 @@ namespace ChessProto
 		[SerializeField] [Range(0, 2)] private float _pieceMovementDelay = 0f;
 
 		private const int CellZise = GlobalVariables.CellSize;
-		private const int BoardSize = 8;
+		private const int BoardLength = GlobalVariables.BoardLength;
 
 		private const int EnemyPawnColumnIndex = 7;
 		private const int EnemyOfficerColumnIndex = 8;
@@ -89,18 +89,18 @@ namespace ChessProto
 			var initialCellPosition =
 				new Vector3(_firstCellPositionX, _firstCellPositionY);
 
-			for (int y = 0; y < BoardSize; y++)
+			for (int y = 0; y < BoardLength; y++)
 			{
-				for (int x = 0; x < BoardSize; x++)
+				for (int x = 0; x < BoardLength; x++)
 				{
 					var cellPosition =
 						new Vector2(
-							initialCellPosition.x + (BoardSize - x) * CellZise,
+							initialCellPosition.x + (BoardLength - x) * CellZise,
 							initialCellPosition.y - y * CellZise);
 
 					var cell = Instantiate(_cell, _cellRoot);
 					cell.transform.localPosition = initialSpawnPosition;
-					cell.SetPositionIndexes(BoardSize - y, BoardSize - x);
+					cell.SetPositionIndexes(BoardLength - y, BoardLength - x);
 					cell.SetColor((x + y) % 2 == 1 ? _firstColor : _secondColor);
 					cell.Side = Side.Free;
 

@@ -2,9 +2,7 @@
 {
 	public class King : BasePiece
 	{
-		private const int DistanceUnit = GlobalVariables.DistanceUnit;
-
-		public override void HighlightPositions()
+		public override void FindCellsToHighlight()
 		{
 			FindPosition(Column + DistanceUnit, Row + DistanceUnit, Side);
 			FindPosition(Column + DistanceUnit, Row - DistanceUnit, Side);

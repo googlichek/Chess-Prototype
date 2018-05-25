@@ -2,7 +2,7 @@
 {
 	public class Bishop : BasePiece
 	{
-		public override void HighlightPositions()
+		public override void FindCellsToHighlight()
 		{
 		}
 	}

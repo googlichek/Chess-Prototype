@@ -107,8 +107,8 @@ namespace ChessProto
 		{
 			_activePiece = piece;
 			piece.HighlightPiece();
-			piece.HighlightPositions();
 
+			piece.FindCellsToHighlight();
 			foreach (var highlightedCell in GameData.HighlightedCells)
 				highlightedCell.Highlight();
 		}

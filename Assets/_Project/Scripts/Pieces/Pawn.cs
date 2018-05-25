@@ -2,11 +2,10 @@
 {
 	public class Pawn : BasePiece
 	{
-		private const int DistanceUnit = GlobalVariables.DistanceUnit;
 		private const int PlayerInitialColumn = 2;
 		private const int EnemyInitialColumn = 7;
 
-		public override void HighlightPositions()
+		public override void FindCellsToHighlight()
 		{
 			var initialColumn = 0;
 			var multiplier = 0;
