@@ -171,7 +171,7 @@ MonoBehaviour:
   _cellMovementEase: 27
   _cellMovementDuration: 0.5
   _cellMovementDelay: 0.15
-  _pieceMovementEase: 15
+  _pieceMovementEase: 30
   _pieceMovementDuration: 1
   _pieceMovementDelay: 0.1
 --- !u!114 &114472538180119530

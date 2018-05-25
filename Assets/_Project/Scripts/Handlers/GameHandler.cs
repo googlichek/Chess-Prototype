@@ -34,14 +34,10 @@ namespace ChessProto
 		private void SubscribeToEvents()
 		{
 			foreach (var cell in GameData.Cells)
-			{
 				cell.CellClickedEvent += CellClickedEventRecieved;
-			}
 
 			foreach (var piece in GameData.Pieces)
-			{
 				SubscribeToPieceEvents(piece);
-			}
 
 			GameData.Pieces.Clear();
 		}

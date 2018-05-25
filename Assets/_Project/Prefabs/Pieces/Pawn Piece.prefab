@@ -67,6 +67,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 941cd9b109de524458965fbc18c01c10, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MovementEase: 15
+  DefeatEase: 12
+  HighlightEase: 4
+  AnimationDuration: 1
+  ScaleAmount: 1.2
   _whitePiece: {fileID: 21300000, guid: d257e09bd2f389345b27d2052d73e503, type: 3}
   _blackPiece: {fileID: 21300000, guid: 5f736121150457c4a84116f44f14804e, type: 3}
 --- !u!222 &222312178683226302

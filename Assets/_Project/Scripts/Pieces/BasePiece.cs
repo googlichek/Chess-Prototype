@@ -25,6 +25,7 @@ namespace ChessProto
 		public Ease DefeatEase = Ease.InQuint;
 		public Ease HighlightEase = Ease.InOutSine;
 		[Range(0, 1)] public float AnimationDuration = 1;
+		[Range(0, 1)] public float DefeatAnimationDuration = 0.5f;
 		[Range(0, 2)] public float ScaleAmount = 1.2f;
 
 		[Header("Piece Sprites")]
@@ -113,9 +114,9 @@ namespace ChessProto
 
 		public void SelfDestruct()
 		{
-			_image.DOFade(0, AnimationDuration).SetEase(DefeatEase);
+			_image.DOFade(0, DefeatAnimationDuration).SetEase(DefeatEase);
 			_image.transform
-				.DOScale(0, AnimationDuration)
+				.DOScale(0, DefeatAnimationDuration)
 				.SetEase(DefeatEase)
 				.OnComplete(() => Destroy(gameObject));
 		}
