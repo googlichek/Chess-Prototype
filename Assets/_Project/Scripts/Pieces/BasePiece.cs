@@ -122,19 +122,53 @@ namespace ChessProto
 				.OnComplete(() => Destroy(gameObject));
 		}
 
-		protected void FindPosition(int column, int row)
+		protected void FindFreePosition(int column, int row)
 		{
 			var cell =
 				GameData
 					.Cells
 					.FirstOrDefault(
-						x => x.Column == column && x.Row == row && x.Side != _side);
+						x => x.Column == column && x.Row == row && x.Side == Side.Free);
+			if (cell == null) return;
+
+			GameData.HighlightedCells.Add(cell);
+		}
+
+		protected void FindPosition(int column, int row, Side original)
+		{
+			var opponent = FindOpposingSide(original);
+
+			var cell =
+				GameData
+					.Cells
+					.FirstOrDefault(
+						x =>
+							x.Column == column &&
+							x.Row == row &&
+							(x.Side == opponent || x.Side == Side.Free));
 			if (cell == null) return;
 
 			GameData.HighlightedCells.Add(cell);
 		}
 
 		protected void FindOpponentPosition(int column, int row, Side original)
+		{
+			var opponent = FindOpposingSide(original);
+
+			var cell =
+				GameData
+					.Cells
+					.FirstOrDefault(
+						x =>
+							x.Column == column &&
+							x.Row == row &&
+							x.Side == opponent);
+			if (cell == null) return;
+
+			GameData.HighlightedCells.Add(cell);
+		}
+
+		private static Side FindOpposingSide(Side original)
 		{
 			var opponent = Side.None;
 
@@ -148,16 +182,8 @@ namespace ChessProto
 					break;
 			}
 
-			if (opponent == Side.None) return;
-
-			var cell =
-				GameData
-					.Cells
-					.FirstOrDefault(
-						x => x.Column == column && x.Row == row && x.Side == opponent);
-			if (cell == null) return;
-
-			GameData.HighlightedCells.Add(cell);
+			if (opponent == Side.None) return opponent;
+			return opponent;
 		}
 	}
 }

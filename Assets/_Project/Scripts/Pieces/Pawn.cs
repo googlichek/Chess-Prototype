@@ -19,17 +19,17 @@
 					break;
 			}
 
-			FindPosition(Column, Row);
 
-			FindPosition(Column + multiplier, Row);
-			FindPosition(Column + multiplier, Row + multiplier);
-			FindPosition(Column + multiplier, Row - multiplier);
+			FindFreePosition(Column + multiplier, Row);
+
+			FindPosition(Column + multiplier, Row + multiplier, Side);
+			FindPosition(Column + multiplier, Row - multiplier, Side);
 
 			FindOpponentPosition(Column - multiplier, Row + multiplier, Side);
 			FindOpponentPosition(Column - multiplier, Row - multiplier, Side);
 
 			if (Column == initialColumn)
-				FindPosition(Column + 2 * multiplier, Row);
+				FindFreePosition(Column + 2 * multiplier, Row);
 		}
 	}
 }
