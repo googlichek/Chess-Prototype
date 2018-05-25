@@ -15,11 +15,21 @@ namespace ChessProto
 		public event OnChessPieceMove ChessPieceMoveStartEvent;
 		public event OnChessPieceMove ChessPieceMoveEndEvent;
 		public event OnChessPieceMove ChessPieceMoveResetEvent;
-
 		protected const int DistanceUnit = GlobalVariables.DistanceUnit;
 
+		/// <summary>
+		/// Indicates to which side this piece belongs.
+		/// </summary>
 		public Side Side { get { return _side; } }
+
+		/// <summary>
+		/// Row index of the piece.
+		/// </summary>
 		public int Row { get { return _row; } }
+
+		/// <summary>
+		/// Column index of the piece.
+		/// </summary>
 		public int Column { get { return _column; } }
 
 		[Header("Animation Variables")]
@@ -40,6 +50,10 @@ namespace ChessProto
 		private int _row = 0;
 		private int _column = 0;
 
+		/// <summary>
+		/// Sets side of the piece with valid image.
+		/// </summary>
+		/// <param name="side">Side to which piece should belong.</param>
 		public void SetSide(Side side)
 		{
 			_side = side;
@@ -58,12 +72,22 @@ namespace ChessProto
 			}
 		}
 
+		/// <summary>
+		/// Sets board position indexes of this piece.
+		/// </summary>
+		/// <param name="column">Column index.</param>
+		/// <param name="row">Row index.</param>
 		public void SetPositionIndexes(int column, int row)
 		{
 			_row = row;
 			_column = column;
 		}
 
+		/// <summary>
+		/// Tries to move piece to new position.
+		/// </summary>
+		/// <param name="column">Destination column index.</param>
+		/// <param name="row">Destination row index.</param>
 		public virtual void Move(int column, int row)
 		{
 			var endCell =
@@ -79,11 +103,13 @@ namespace ChessProto
 
 			if (ChessPieceMoveStartEvent != null) ChessPieceMoveStartEvent();
 
+			// Updating cell states.
 			startCell.Side = Side.Free;
 			endCell.Side = Side;
 
 			if (ChessPieceMoveResetEvent != null) ChessPieceMoveResetEvent();
 
+			// Updating piece position on the board.
 			_column = endCell.Column;
 			_row = endCell.Row;
 
@@ -96,15 +122,24 @@ namespace ChessProto
 				});
 		}
 
+		/// <summary>
+		/// Rules for finding valid piece movement cells.
+		/// </summary>
 		public virtual void FindCellsToHighlight()
 		{
 		}
 
+		
+		
 		public void OnPointerClick(PointerEventData eventData)
 		{
+			// Sends this piece object to all listeners.
 			if (ChessPieceClickedEvent != null) ChessPieceClickedEvent(this);
 		}
 
+		/// <summary>
+		/// Highlights selected piece.
+		/// </summary>
 		public void HighlightPiece()
 		{
 			_image.DOKill();
@@ -114,6 +149,9 @@ namespace ChessProto
 				.SetEase(HighlightEase);
 		}
 
+		/// <summary>
+		/// Destroys piece.
+		/// </summary>
 		public void SelfDestruct()
 		{
 			_image.DOFade(0, DefeatAnimationDuration).SetEase(DefeatEase);
@@ -123,6 +161,12 @@ namespace ChessProto
 				.OnComplete(() => Destroy(gameObject));
 		}
 
+		/// <summary>
+		/// Finds first cell that doesn't belong to any side
+		/// and corresponds to given coordinates.
+		/// </summary>
+		/// <param name="column">Column index.</param>
+		/// <param name="row">Row idnex.</param>
 		protected void FindFreePosition(int column, int row)
 		{
 			var cell =
@@ -135,6 +179,14 @@ namespace ChessProto
 			GameData.HighlightedCells.Add(cell);
 		}
 
+		/// <summary>
+		/// Finds first cell that doesn't belong to any
+		/// or belongs to opposite side
+		/// and corresponds to given coordinates.
+		/// </summary>
+		/// <param name="column">Column index.</param>
+		/// <param name="row">Row idnex.</param>
+		/// <param name="original">Sender's side.</param>
 		protected void FindPosition(int column, int row, Side original)
 		{
 			var opponent = FindOpposingSide(original);
@@ -152,6 +204,14 @@ namespace ChessProto
 			GameData.HighlightedCells.Add(cell);
 		}
 
+		/// <summary>
+		/// Method for finding valid movement cells in loop.
+		/// </summary>
+		/// <param name="column">Column index.</param>
+		/// <param name="row">Row idnex.</param>
+		/// <param name="original">Sender's side.</param>
+		/// <returns>True, if loop should continue,
+		/// False otherwise.</returns>
 		protected bool FindPositionWithValidation(int column, int row, Side original)
 		{
 			var opponent = FindOpposingSide(original);
@@ -176,6 +236,13 @@ namespace ChessProto
 			return true;
 		}
 
+		/// <summary>
+		/// Finds first cell that belongs to opposite side
+		/// and corresponds to given coordinates.
+		/// </summary>
+		/// <param name="column">Column index.</param>
+		/// <param name="row">Row idnex.</param>
+		/// <param name="original">Sender's side.</param>
 		protected void FindOpponentPosition(int column, int row, Side original)
 		{
 			var opponent = FindOpposingSide(original);

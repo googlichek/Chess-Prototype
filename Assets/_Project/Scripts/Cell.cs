@@ -5,14 +5,27 @@ using UnityEngine.UI;
 
 namespace ChessProto
 {
+	/// <summary>
+	/// Describes cell behaviour.
+	/// </summary>
 	public class Cell : MonoBehaviour, IPointerClickHandler
 	{
 		public delegate void OnCellClicked(Cell cell);
 		public event OnCellClicked CellClickedEvent;
 
+		/// <summary>
+		/// Row index of the piece.
+		/// </summary>
 		public int Row { get { return _row; } }
+
+		/// <summary>
+		/// Column index of the piece.
+		/// </summary>
 		public int Column { get { return _column; } }
 
+		/// <summary>
+		/// Indicates to which side this cell belongs.
+		/// </summary>
 		[Header("Cell Variables")]
 		public Side Side = Side.None;
 		[SerializeField] private Image _border = null;
@@ -30,17 +43,29 @@ namespace ChessProto
 			_image = GetComponent<Image>();
 		}
 
+		/// <summary>
+		/// Sets cell color.
+		/// </summary>
+		/// <param name="color">Given color.</param>
 		public void SetColor(Color color)
 		{
 			_image.color = color;
 		}
 
+		/// <summary>
+		/// Sets board position indexes of this cell.
+		/// </summary>
+		/// <param name="column">Column index.</param>
+		/// <param name="row">Row index.</param>
 		public void SetPositionIndexes(int column, int row)
 		{
 			_row = row;
 			_column = column;
 		}
 
+		/// <summary>
+		/// Highlights cell.
+		/// </summary>
 		public void Highlight()
 		{
 			_border.DOKill();
@@ -53,6 +78,9 @@ namespace ChessProto
 				.SetLoops(-1, LoopType.Yoyo);
 		}
 
+		/// <summary>
+		/// Stops cell highlighting.
+		/// </summary>
 		public void StopHighlighting()
 		{
 			_border.DOFade(0, _animationDuration).SetEase(_animationEase);

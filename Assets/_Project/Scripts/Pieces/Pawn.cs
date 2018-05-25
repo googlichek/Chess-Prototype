@@ -1,5 +1,8 @@
 ﻿namespace ChessProto
 {
+	/// <summary>
+	/// Describes Pawn piece behaviour.
+	/// </summary>
 	public class Pawn : BasePiece
 	{
 		private const int PlayerInitialColumn = 2;

@@ -1,9 +1,15 @@
 ﻿namespace ChessProto
 {
+	/// <summary>
+	/// Describes Rook piece behaviour.
+	/// </summary>
 	public class Rook : BasePiece
 	{
 		private const int SearchLength = GlobalVariables.BoardLength - 1;
 
+		/// <summary>
+		/// Rules for finding valid Rook movement cells.
+		/// </summary>
 		public override void FindCellsToHighlight()
 		{
 			for (int index = 1; index <= SearchLength; index++)

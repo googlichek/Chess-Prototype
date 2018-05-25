@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace ChessProto
 {
+	/// <summary>
+	/// Handles game flow.
+	/// Listens to all events that pieces and cells send.
+	/// </summary>
 	public class GameHandler : MonoBehaviour
 	{
 		private BoardHandler _boardHandler = null;
@@ -32,6 +35,7 @@ namespace ChessProto
 			foreach (var piece in GameData.Pieces)
 				SubscribeToPieceEvents(piece);
 
+			// Clearing list to assure safe destruction of pieces.
 			GameData.Pieces.Clear();
 		}
 

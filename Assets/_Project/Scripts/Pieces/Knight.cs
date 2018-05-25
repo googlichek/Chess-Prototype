@@ -1,5 +1,8 @@
 ﻿namespace ChessProto
 {
+	/// <summary>
+	/// Describes Knight piece behaviour.
+	/// </summary>
 	public class Knight : BasePiece
 	{
 		public override void FindCellsToHighlight()

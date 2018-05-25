@@ -1,11 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace ChessProto
 {
+	/// <summary>
+	/// Class for creating & initializing board & pieces.
+	/// </summary>
 	public class BoardHandler : MonoBehaviour
 	{
 		public delegate void OnAnimationComplete();
@@ -79,6 +81,9 @@ namespace ChessProto
 			EnablePieceMovementEvent += ShowStartMessage;
 		}
 
+		/// <summary>
+		/// Creates board from cells. Animates creation.
+		/// </summary>
 		private void CreateBoard()
 		{
 			_animationSequence = DOTween.Sequence();
@@ -118,6 +123,9 @@ namespace ChessProto
 			}
 		}
 
+		/// <summary>
+		/// Creates pieces. Places them on board.
+		/// </summary>
 		private void CreatePieces()
 		{
 			_animationSequence = DOTween.Sequence();
