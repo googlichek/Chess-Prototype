@@ -111,6 +111,7 @@ namespace ChessProto
 
 			if (!isTargetValid)
 			{
+				piece.Highlight();
 				IndicateWrongAction();
 				ResetBoardActivities();
 				return;
