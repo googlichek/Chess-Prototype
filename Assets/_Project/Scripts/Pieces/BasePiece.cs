@@ -38,6 +38,7 @@ namespace ChessProto
 		public Ease HighlightEase = Ease.InOutSine;
 		[Range(0, 1)] public float AnimationDuration = 1;
 		[Range(0, 1)] public float DefeatAnimationDuration = 0.5f;
+		[Range(0, 1)] public float HighlightAnimationDuration = 0.5f;
 		[Range(0, 2)] public float ScaleAmount = 1.2f;
 
 		[Header("Piece Sprites")]
@@ -84,11 +85,18 @@ namespace ChessProto
 		}
 
 		/// <summary>
+		/// Rules for finding valid piece movement cells.
+		/// </summary>
+		public virtual void FindCellsToHighlight()
+		{
+		}
+
+		/// <summary>
 		/// Tries to move piece to new position.
 		/// </summary>
 		/// <param name="column">Destination column index.</param>
 		/// <param name="row">Destination row index.</param>
-		public virtual void Move(int column, int row)
+		public void Move(int column, int row)
 		{
 			var endCell =
 				GameData.HighlightedCells.FirstOrDefault(x => x.Column == column && x.Row == row);
@@ -122,15 +130,7 @@ namespace ChessProto
 				});
 		}
 
-		/// <summary>
-		/// Rules for finding valid piece movement cells.
-		/// </summary>
-		public virtual void FindCellsToHighlight()
-		{
-		}
 
-		
-		
 		public void OnPointerClick(PointerEventData eventData)
 		{
 			// Sends this piece object to all listeners.
@@ -145,7 +145,7 @@ namespace ChessProto
 			_image.DOKill();
 			_image.transform.DOScale(1, 0);
 			_image.transform
-				.DOPunchScale(ScaleAmount * Vector2.one, AnimationDuration, 4)
+				.DOPunchScale(ScaleAmount * Vector2.one, HighlightAnimationDuration)
 				.SetEase(HighlightEase);
 		}
 
@@ -255,6 +255,20 @@ namespace ChessProto
 							x.Column == column &&
 							x.Row == row &&
 							x.Side == opponent);
+			if (cell == null) return;
+
+			GameData.HighlightedCells.Add(cell);
+		}
+
+		/// <summary>
+		/// Finds current piece cell.
+		/// </summary>
+		protected void FindSelf()
+		{
+			var cell =
+				GameData
+					.Cells
+					.FirstOrDefault(x => x.Column == _column && x.Row == _row);
 			if (cell == null) return;
 
 			GameData.HighlightedCells.Add(cell);

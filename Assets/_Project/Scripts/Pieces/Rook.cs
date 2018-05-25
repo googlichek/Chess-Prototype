@@ -12,6 +12,8 @@
 		/// </summary>
 		public override void FindCellsToHighlight()
 		{
+			FindSelf();
+
 			for (int index = 1; index <= SearchLength; index++)
 			{
 				var isPositionClear =

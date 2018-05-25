@@ -69,9 +69,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MovementEase: 15
   DefeatEase: 12
-  HighlightEase: 4
+  HighlightEase: 27
   AnimationDuration: 1
-  ScaleAmount: 1.2
+  DefeatAnimationDuration: 0.5
+  ScaleAmount: 0.9
   _whitePiece: {fileID: 21300000, guid: 384c137a545b17c41be3307219c33f03, type: 3}
   _blackPiece: {fileID: 21300000, guid: a858a444e5e84b344a38d0055c3e5b97, type: 3}
 --- !u!222 &222312178683226302

@@ -57,9 +57,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd2837fbb5ec6b4419df91ee3376bf5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Occupied: 0
+  Side: 0
   _border: {fileID: 114389280309162752}
-  _animationEase: 4
+  _animationEase: 27
   _scaleAmount: 0.9
   _animationDuration: 0.75
 --- !u!114 &114381730918274448

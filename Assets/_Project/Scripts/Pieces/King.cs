@@ -7,6 +7,8 @@
 	{
 		public override void FindCellsToHighlight()
 		{
+			FindSelf();
+
 			FindPosition(Column + DistanceUnit, Row + DistanceUnit, Side);
 			FindPosition(Column + DistanceUnit, Row - DistanceUnit, Side);
 

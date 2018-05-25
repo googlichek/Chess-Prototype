@@ -25,6 +25,8 @@
 					break;
 			}
 
+			FindSelf();
+
 			FindFreePosition(Column + multiplier, Row);
 
 			FindPosition(Column + multiplier, Row + multiplier, Side);
