@@ -30,7 +30,8 @@ namespace ChessProto
 			_pieceMovementEnabled = false;
 
 			_boardHandler = FindObjectOfType<BoardHandler>();
-			_boardHandler.EnablePieceMovementEvent += SubscribeToEvents;
+			_boardHandler.EnableBoardEvent += SubscribeToEvents;
+			_boardHandler.EnablePieceMovementEvent += EnablePieceMovement;
 
 			_activeSide = Side.Player;
 		}
@@ -131,6 +132,11 @@ namespace ChessProto
 
 		}
 
+		private void EnablePieceMovement()
+		{
+			_pieceMovementEnabled = true;
+		}
+
 		private void BeginBoardActivities(BasePiece piece)
 		{
 			if (_activeSide != piece.Side)
@@ -173,6 +179,8 @@ namespace ChessProto
 		private void IndicateWrongAction()
 		{
 			if (!_pieceMovementEnabled) return;
+
+			_pieceMovementEnabled = false;
 
 			_boardHandler.Message = WrongMove;
 			_boardHandler.ShowMessage();

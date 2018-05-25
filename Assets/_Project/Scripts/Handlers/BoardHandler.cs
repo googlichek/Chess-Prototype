@@ -11,11 +11,12 @@ namespace ChessProto
 	public class BoardHandler : MonoBehaviour
 	{
 		public delegate void OnAnimationComplete();
+		public event OnAnimationComplete EnableBoardEvent;
 		public event OnAnimationComplete EnablePieceMovementEvent;
 		private event OnAnimationComplete StartCreationOfSidesEvent;
 
 		/// <summary>
-		/// Message.
+		/// Message to display in animation sequence.
 		/// </summary>
 		public string Message { set { _message.text = value; } }
 
@@ -80,9 +81,12 @@ namespace ChessProto
 
 			CreateBoard();
 			StartCreationOfSidesEvent += CreatePieces;
-			EnablePieceMovementEvent += ShowMessage;
+			EnableBoardEvent += ShowMessage;
 		}
 
+		/// <summary>
+		/// Displays message.
+		/// </summary>
 		public void ShowMessage()
 		{
 			_animationSequence = DOTween.Sequence();
@@ -110,7 +114,8 @@ namespace ChessProto
 			tweener = _message.transform.DOScale(0, 0);
 			_animationSequence.Append(tweener);
 
-			_animationSequence.Play();
+			_animationSequence.Play().OnComplete(
+				() => CompleteAnimationEvent(EnablePieceMovementEvent));
 		}
 
 		/// <summary>
@@ -179,7 +184,7 @@ namespace ChessProto
 				-_spawnOffset);
 
 			_animationSequence.Play().OnComplete(
-				() => CompleteAnimationEvent(EnablePieceMovementEvent));
+				() => CompleteAnimationEvent(EnableBoardEvent));
 		}
 
 		private void CreateSide(
