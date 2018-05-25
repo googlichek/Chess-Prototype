@@ -10,6 +10,7 @@ namespace ChessProto
 	public class GameHandler : MonoBehaviour
 	{
 		private const string WrongMove = "Wrong move!";
+		private const string WrongSide = "Wrong side!";
 
 		private BoardHandler _boardHandler = null;
 		private BasePiece _activePiece = null;
@@ -63,7 +64,7 @@ namespace ChessProto
 			if (!_pieceMovementEnabled) return;
 			if (_activePiece == null)
 			{
-				IndicateWrongAction();
+				IndicateWrongAction(WrongMove);
 				return;
 			}
 
@@ -73,7 +74,7 @@ namespace ChessProto
 			}
 			else
 			{
-				IndicateWrongAction();
+				IndicateWrongAction(WrongMove);
 				ResetBoardActivities();
 			}
 		}
@@ -112,7 +113,7 @@ namespace ChessProto
 			if (!isTargetValid)
 			{
 				piece.Highlight();
-				IndicateWrongAction();
+				IndicateWrongAction(WrongSide);
 				ResetBoardActivities();
 				return;
 			}
@@ -142,7 +143,7 @@ namespace ChessProto
 		{
 			if (_activeSide != piece.Side)
 			{
-				IndicateWrongAction();
+				IndicateWrongAction(WrongSide);
 				piece.Highlight();
 				return;
 			}
@@ -177,13 +178,13 @@ namespace ChessProto
 			}
 		}
 
-		private void IndicateWrongAction()
+		private void IndicateWrongAction(string message)
 		{
 			if (!_pieceMovementEnabled) return;
 
 			_pieceMovementEnabled = false;
 
-			_boardHandler.Message = WrongMove;
+			_boardHandler.Message = message;
 			_boardHandler.ShowMessage();
 		}
 	}
