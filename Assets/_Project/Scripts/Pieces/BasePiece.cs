@@ -140,7 +140,7 @@ namespace ChessProto
 		/// <summary>
 		/// Highlights selected piece.
 		/// </summary>
-		public void HighlightPiece()
+		public void Highlight()
 		{
 			_image.DOKill();
 			_image.transform.DOScale(1, 0);

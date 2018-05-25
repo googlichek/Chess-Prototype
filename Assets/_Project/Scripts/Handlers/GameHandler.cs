@@ -9,8 +9,12 @@ namespace ChessProto
 	/// </summary>
 	public class GameHandler : MonoBehaviour
 	{
+		private const string WrongMove = "Wrong move!";
+
 		private BoardHandler _boardHandler = null;
 		private BasePiece _activePiece = null;
+
+		private Side _activeSide = Side.None;
 
 		private bool _pieceMovementEnabled = true;
 
@@ -23,8 +27,12 @@ namespace ChessProto
 
 		void Start()
 		{
+			_pieceMovementEnabled = false;
+
 			_boardHandler = FindObjectOfType<BoardHandler>();
 			_boardHandler.EnablePieceMovementEvent += SubscribeToEvents;
+
+			_activeSide = Side.Player;
 		}
 
 		private void SubscribeToEvents()
@@ -37,6 +45,8 @@ namespace ChessProto
 
 			// Clearing list to assure safe destruction of pieces.
 			GameData.Pieces.Clear();
+
+			_pieceMovementEnabled = true;
 		}
 
 		private void SubscribeToPieceEvents(BasePiece piece)
@@ -50,10 +60,21 @@ namespace ChessProto
 		private void CellClickedEventRecieved(Cell cell)
 		{
 			if (!_pieceMovementEnabled) return;
-			if (_activePiece == null) return;
+			if (_activePiece == null)
+			{
+				IndicateWrongAction();
+				return;
+			}
 
-			if (GameData.HighlightedCells.Contains(cell)) _activePiece.Move(cell.Column, cell.Row);
-			else ResetBoardActivities();
+			if (GameData.HighlightedCells.Contains(cell))
+			{
+				_activePiece.Move(cell.Column, cell.Row);
+			}
+			else
+			{
+				IndicateWrongAction();
+				ResetBoardActivities();
+			}
 		}
 
 		private void ChessPieceClickedEventRecieved(BasePiece piece)
@@ -89,6 +110,7 @@ namespace ChessProto
 
 			if (!isTargetValid)
 			{
+				IndicateWrongAction();
 				ResetBoardActivities();
 				return;
 			}
@@ -105,12 +127,21 @@ namespace ChessProto
 		private void ChessPieceMoveEndEventRecieved()
 		{
 			_pieceMovementEnabled = true;
+			SwitchSides();
+
 		}
 
 		private void BeginBoardActivities(BasePiece piece)
 		{
+			if (_activeSide != piece.Side)
+			{
+				IndicateWrongAction();
+				piece.Highlight();
+				return;
+			}
+
 			_activePiece = piece;
-			piece.HighlightPiece();
+			piece.Highlight();
 
 			piece.FindCellsToHighlight();
 			foreach (var highlightedCell in GameData.HighlightedCells)
@@ -124,6 +155,27 @@ namespace ChessProto
 			GameData.HighlightedCells.Clear();
 
 			_activePiece = null;
+		}
+
+		private void SwitchSides()
+		{
+			switch (_activeSide)
+			{
+				case Side.Player:
+					_activeSide = Side.Enemy;
+					break;
+				case Side.Enemy:
+					_activeSide = Side.Player;
+					break;
+			}
+		}
+
+		private void IndicateWrongAction()
+		{
+			if (!_pieceMovementEnabled) return;
+
+			_boardHandler.Message = WrongMove;
+			_boardHandler.ShowMessage();
 		}
 	}
 }

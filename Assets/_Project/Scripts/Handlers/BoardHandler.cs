@@ -14,8 +14,10 @@ namespace ChessProto
 		public event OnAnimationComplete EnablePieceMovementEvent;
 		private event OnAnimationComplete StartCreationOfSidesEvent;
 
-		[Header("Temporary Input Blocker")]
-		[SerializeField] private GameObject _protector = null;
+		/// <summary>
+		/// Message.
+		/// </summary>
+		public string Message { set { _message.text = value; } }
 
 		[Header("Cell Placement Variables")]
 		[SerializeField] private Cell _cell = null;
@@ -36,9 +38,9 @@ namespace ChessProto
 		[SerializeField] [Range(0, 1000)] private int _spawnOffset = 0;
 
 		[Header("Overall Animation Variables")]
-		[SerializeField] private Text _startMessage = null;
-		[SerializeField] private Ease _startMessageSubsequenceEase = Ease.Linear;
-		[SerializeField] [Range(0, 2)] private float _startMessageSubsequenceDuration = 0f;
+		[SerializeField] private Text _message = null;
+		[SerializeField] private Ease _messageSubsequenceEase = Ease.Linear;
+		[SerializeField] [Range(0, 2)] private float _messageSubsequenceDuration = 0f;
 		[SerializeField] private Ease _cellMovementEase = Ease.Linear;
 		[SerializeField] [Range(0, 2)] private float _cellMovementDuration = 0f;
 		[SerializeField] [Range(0, 2)] private float _cellMovementDelay = 0f;
@@ -78,7 +80,37 @@ namespace ChessProto
 
 			CreateBoard();
 			StartCreationOfSidesEvent += CreatePieces;
-			EnablePieceMovementEvent += ShowStartMessage;
+			EnablePieceMovementEvent += ShowMessage;
+		}
+
+		public void ShowMessage()
+		{
+			_animationSequence = DOTween.Sequence();
+			_animationSequence.Pause();
+
+			var tweener =
+				_message
+					.DOFade(1, _messageSubsequenceDuration)
+					.SetEase(_messageSubsequenceEase);
+			_animationSequence.Insert(0, tweener);
+
+			tweener =
+				_message.transform
+					.DOScale(1, _messageSubsequenceDuration)
+					.SetEase(_messageSubsequenceEase);
+			_animationSequence.Insert(0, tweener);
+
+			tweener =
+				_message
+					.DOFade(0, _messageSubsequenceDuration)
+					.SetEase(_messageSubsequenceEase)
+					.SetDelay(_messageSubsequenceDuration);
+			_animationSequence.Append(tweener);
+
+			tweener = _message.transform.DOScale(0, 0);
+			_animationSequence.Append(tweener);
+
+			_animationSequence.Play();
 		}
 
 		/// <summary>
@@ -119,7 +151,8 @@ namespace ChessProto
 					_animationSequence.Insert(0, twener);
 				}
 
-				_animationSequence.Play().OnComplete(() => CompleteAnimationEvent(StartCreationOfSidesEvent));
+				_animationSequence.Play().OnComplete(
+					() => CompleteAnimationEvent(StartCreationOfSidesEvent));
 			}
 		}
 
@@ -145,47 +178,8 @@ namespace ChessProto
 				PlayerOfficerColumnIndex,
 				-_spawnOffset);
 
-			_animationSequence.Play().OnComplete(() => CompleteAnimationEvent(EnablePieceMovementEvent));
-		}
-
-		private void ShowStartMessage()
-		{
-			_animationSequence = DOTween.Sequence();
-			_animationSequence.Pause();
-
-			var tweener =
-				_startMessage
-					.DOFade(1, _startMessageSubsequenceDuration)
-					.SetEase(_startMessageSubsequenceEase);
-			_animationSequence.Insert(0, tweener);
-
-			tweener =
-				_startMessage.transform
-					.DOScale(1, _startMessageSubsequenceDuration)
-					.SetEase(_startMessageSubsequenceEase);
-			_animationSequence.Insert(0, tweener);
-
-			tweener =
-				_startMessage.transform
-					.DOScale(3, _startMessageSubsequenceDuration)
-					.SetEase(_startMessageSubsequenceEase)
-					.SetDelay(_startMessageSubsequenceDuration);
-			_animationSequence.Append(tweener);
-
-			tweener =
-				_startMessage
-					.DOFade(0, _startMessageSubsequenceDuration)
-					.SetEase(_startMessageSubsequenceEase)
-					.SetDelay(_startMessageSubsequenceDuration);
-			_animationSequence.Join(tweener);
-
-			tweener = _startMessage.transform.DOScale(0, 0);
-			_animationSequence.Append(tweener);
-
-			tweener = _protector.transform.DOScale(0, 0);
-			_animationSequence.Append(tweener);
-
-			_animationSequence.Play();
+			_animationSequence.Play().OnComplete(
+				() => CompleteAnimationEvent(EnablePieceMovementEvent));
 		}
 
 		private void CreateSide(
