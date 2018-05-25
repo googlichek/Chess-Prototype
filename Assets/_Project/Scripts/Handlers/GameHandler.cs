@@ -24,13 +24,6 @@ namespace ChessProto
 			_boardHandler.EnablePieceMovementEvent += SubscribeToEvents;
 		}
 
-		public void Reset()
-		{
-			GameData.Pieces.Clear();
-			GameData.Cells.Clear();
-			GameData.HighlightedCells.Clear();
-		}
-
 		private void SubscribeToEvents()
 		{
 			foreach (var cell in GameData.Cells)
@@ -71,21 +64,7 @@ namespace ChessProto
 			{
 				if (piece.Side != _activePiece.Side)
 				{
-					var isTargetValid =
-						GameData.HighlightedCells.Exists(
-							x =>
-								x.Column == piece.Column &&
-								x.Row == piece.Row &&
-								x.Side == piece.Side);
-
-					if (!isTargetValid)
-					{
-						ResetBoardActivities();
-						return;
-					}
-
-					_activePiece.Move(piece.Column, piece.Row);
-					piece.SelfDestruct();
+					TryToPickOnOpponent(piece);
 				}
 				else
 				{
@@ -93,6 +72,25 @@ namespace ChessProto
 					BeginBoardActivities(piece);
 				}
 			}
+		}
+
+		private void TryToPickOnOpponent(BasePiece piece)
+		{
+			var isTargetValid =
+				GameData.HighlightedCells.Exists(
+					x =>
+						x.Column == piece.Column &&
+						x.Row == piece.Row &&
+						x.Side == piece.Side);
+
+			if (!isTargetValid)
+			{
+				ResetBoardActivities();
+				return;
+			}
+
+			_activePiece.Move(piece.Column, piece.Row);
+			piece.SelfDestruct();
 		}
 
 		private void ChessPieceMoveStartEventRecieved()

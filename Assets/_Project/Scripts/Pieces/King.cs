@@ -2,31 +2,21 @@
 {
 	public class King : BasePiece
 	{
+		private const int DistanceUnit = GlobalVariables.DistanceUnit;
+
 		public override void HighlightPositions()
 		{
-			var multiplier = 0;
+			FindPosition(Column + DistanceUnit, Row + DistanceUnit, Side);
+			FindPosition(Column + DistanceUnit, Row - DistanceUnit, Side);
 
-			switch (Side)
-			{
-				case Side.Player:
-					multiplier = 1;
-					break;
-				case Side.Enemy:
-					multiplier = -1;
-					break;
-			}
+			FindPosition(Column - DistanceUnit, Row + DistanceUnit, Side);
+			FindPosition(Column - DistanceUnit, Row - DistanceUnit, Side);
 
-			FindPosition(Column + multiplier, Row + multiplier, Side);
-			FindPosition(Column + multiplier, Row - multiplier, Side);
+			FindPosition(Column, Row + DistanceUnit, Side);
+			FindPosition(Column, Row - DistanceUnit, Side);
 
-			FindPosition(Column - multiplier, Row + multiplier, Side);
-			FindPosition(Column - multiplier, Row - multiplier, Side);
-
-			FindPosition(Column, Row + multiplier, Side);
-			FindPosition(Column, Row - multiplier, Side);
-
-			FindPosition(Column + multiplier, Row, Side);
-			FindPosition(Column - multiplier, Row, Side);
+			FindPosition(Column + DistanceUnit, Row, Side);
+			FindPosition(Column - DistanceUnit, Row, Side);
 		}
 	}
 }
