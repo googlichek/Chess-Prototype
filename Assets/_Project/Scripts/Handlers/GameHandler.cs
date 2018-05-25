@@ -48,6 +48,7 @@ namespace ChessProto
 			// Clearing list to assure safe destruction of pieces.
 			GameData.Pieces.Clear();
 
+			// After creating board & pieces it's safe to allow input.
 			_pieceMovementEnabled = true;
 		}
 
@@ -62,6 +63,7 @@ namespace ChessProto
 		private void CellClickedEventRecieved(Cell cell)
 		{
 			if (!_pieceMovementEnabled) return;
+
 			if (_activePiece == null)
 			{
 				IndicateWrongAction(WrongMove);
@@ -101,6 +103,12 @@ namespace ChessProto
 			}
 		}
 
+		/// <summary>
+		/// Checks wether piece belongs to opposing side
+		/// and can be attacked by _activePiece.
+		/// Initiates movement, if so.
+		/// </summary>
+		/// <param name="piece">Opposing piece.</param>
 		private void TryToPickOnOpponent(BasePiece piece)
 		{
 			var isTargetValid =
@@ -139,6 +147,10 @@ namespace ChessProto
 			_pieceMovementEnabled = true;
 		}
 
+		/// <summary>
+		/// Tries to set piece for making a move.
+		/// </summary>
+		/// <param name="piece">Piece to be moved.</param>
 		private void BeginBoardActivities(BasePiece piece)
 		{
 			if (_activeSide != piece.Side)
@@ -156,6 +168,9 @@ namespace ChessProto
 				highlightedCell.Highlight();
 		}
 
+		/// <summary>
+		/// Resets board state.
+		/// </summary>
 		private void ResetBoardActivities()
 		{
 			foreach (var highlightedCell in GameData.HighlightedCells)
