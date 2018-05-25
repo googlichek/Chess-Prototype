@@ -124,7 +124,6 @@ namespace ChessProto
 			_animationSequence.Pause();
 
 			CreateSide(
-				GameData.EnemyPieces,
 				_enemyRoot,
 				Side.Enemy,
 				EnemyPawnColumnIndex,
@@ -132,7 +131,6 @@ namespace ChessProto
 				_spawnOffset);
 
 			CreateSide(
-				GameData.PlayerPieces,
 				_playerRoot,
 				Side.Player,
 				PlayerPawnColumnIndex,
@@ -183,7 +181,6 @@ namespace ChessProto
 		}
 
 		private void CreateSide(
-			List<BasePiece> sidePieces,
 			Transform root,
 			Side side,
 			int pawnPositionColumnIndex,
@@ -205,8 +202,7 @@ namespace ChessProto
 			var index = 0;
 			foreach (var cell in pawnPositions)
 			{
-				InitializePiece(
-					sidePieces, root, cell, _pawn, side, spawnOffset, index);
+				InitializePiece(root, cell, _pawn, side, spawnOffset, index);
 				index++;
 			}
 
@@ -216,30 +212,25 @@ namespace ChessProto
 				{
 					case RookIndexFirst:
 					case RookIndexSecond:
-						InitializePiece(
-							sidePieces, root, cell, _rook, side, spawnOffset, index);
+						InitializePiece(root, cell, _rook, side, spawnOffset, index);
 						break;
 
 					case KnightIndexFirst:
 					case KnightIndexSecond:
-						InitializePiece(
-							sidePieces, root, cell, _knight, side, spawnOffset, index);
+						InitializePiece(root, cell, _knight, side, spawnOffset, index);
 						break;
 
 					case BishopIndexFirst:
 					case BishopIndexSecond:
-						InitializePiece(
-							sidePieces, root, cell, _bishop, side, spawnOffset, index);
+						InitializePiece(root, cell, _bishop, side, spawnOffset, index);
 						break;
 
 					case KingIndex:
-						InitializePiece(
-							sidePieces, root, cell, _king, side, spawnOffset, index);
+						InitializePiece(root, cell, _king, side, spawnOffset, index);
 						break;
 
 					case QueenIndex:
-						InitializePiece(
-							sidePieces, root, cell, _queen, side, spawnOffset, index);
+						InitializePiece(root, cell, _queen, side, spawnOffset, index);
 						break;
 				}
 				index++;
@@ -247,7 +238,6 @@ namespace ChessProto
 		}
 
 		private void InitializePiece(
-			List<BasePiece> sidePieces,
 			Transform root,
 			Cell cell,
 			BasePiece referencePiece,
@@ -265,7 +255,7 @@ namespace ChessProto
 			piece.SetSide(side);
 			piece.SetPositionIndexes(cell.Column, cell.Row);
 
-			sidePieces.Add(piece);
+			GameData.Pieces.Add(piece);
 
 			UpdateMovementAnimationSequence(piece, endPosition, index);
 		}

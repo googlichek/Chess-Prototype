@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ChessProto
@@ -6,13 +7,13 @@ namespace ChessProto
 	public class GameHandler : MonoBehaviour
 	{
 		private BoardHandler _boardHandler = null;
-
 		private BasePiece _activePiece = null;
+
+		private bool _pieceMovementEnabled = true;
 
 		void Awake()
 		{
-			GameData.EnemyPieces = new List<BasePiece>();
-			GameData.PlayerPieces = new List<BasePiece>();
+			GameData.Pieces = new List<BasePiece>();
 			GameData.Cells = new List<Cell>();
 			GameData.HighlightedCells = new List<Cell>();
 		}
@@ -25,8 +26,7 @@ namespace ChessProto
 
 		public void Reset()
 		{
-			GameData.EnemyPieces.Clear();
-			GameData.PlayerPieces.Clear();
+			GameData.Pieces.Clear();
 			GameData.Cells.Clear();
 			GameData.HighlightedCells.Clear();
 		}
@@ -38,39 +38,94 @@ namespace ChessProto
 				cell.CellClickedEvent += CellClickedEventRecieved;
 			}
 
-			foreach (var enemy in GameData.EnemyPieces)
+			foreach (var piece in GameData.Pieces)
 			{
-				enemy.ChessPieceClickedEvent += ChessPieceClickedEventRecieved;
+				SubscribeToPieceEvents(piece);
 			}
 
-			foreach (var enemy in GameData.PlayerPieces)
-			{
-				enemy.ChessPieceClickedEvent += ChessPieceClickedEventRecieved;
-			}
+			GameData.Pieces.Clear();
+		}
+
+		private void SubscribeToPieceEvents(BasePiece piece)
+		{
+			piece.ChessPieceClickedEvent += ChessPieceClickedEventRecieved;
+			piece.ChessPieceMoveStartEvent += ChessPieceMoveStartEventRecieved;
+			piece.ChessPieceMoveEndEvent += ChessPieceMoveEndEventRecieved;
+			piece.ChessPieceMoveResetEvent += ResetBoardActivities;
 		}
 
 		private void CellClickedEventRecieved(Cell cell)
 		{
+			if (!_pieceMovementEnabled) return;
 			if (_activePiece == null) return;
 
-			if (GameData.HighlightedCells.Contains(cell))
-			{
-				_activePiece.Move();
-			}
-			else
-			{
-				foreach (var highlightedCell in GameData.HighlightedCells)
-					highlightedCell.StopHighlighting();
-				GameData.HighlightedCells.Clear();
-
-				_activePiece = null;
-			}
+			if (GameData.HighlightedCells.Contains(cell)) _activePiece.Move(cell.Column, cell.Row);
+			else ResetBoardActivities();
 		}
 
 		private void ChessPieceClickedEventRecieved(BasePiece piece)
 		{
+			if (!_pieceMovementEnabled) return;
+
+			if (_activePiece == null)
+			{
+				BeginBoardActivities(piece);
+			}
+			else
+			{
+				if (piece.Side != _activePiece.Side)
+				{
+					var isTargetValid =
+						GameData.HighlightedCells.Exists(
+							x =>
+								x.Column == piece.Column &&
+								x.Row == piece.Row &&
+								x.Side == piece.Side);
+
+					if (!isTargetValid)
+					{
+						ResetBoardActivities();
+						return;
+					}
+
+					_activePiece.Move(piece.Column, piece.Row);
+					piece.SelfDestruct();
+				}
+				else
+				{
+					ResetBoardActivities();
+					BeginBoardActivities(piece);
+				}
+			}
+		}
+
+		private void ChessPieceMoveStartEventRecieved()
+		{
+			_pieceMovementEnabled = false;
+		}
+
+		private void ChessPieceMoveEndEventRecieved()
+		{
+			_pieceMovementEnabled = true;
+		}
+
+		private void BeginBoardActivities(BasePiece piece)
+		{
 			_activePiece = piece;
+			piece.HighlightPiece();
 			piece.HighlightPositions();
+
+			foreach (var highlightedCell in GameData.HighlightedCells)
+				highlightedCell.Highlight();
+		}
+
+		private void ResetBoardActivities()
+		{
+			foreach (var highlightedCell in GameData.HighlightedCells)
+				highlightedCell.StopHighlighting();
+			GameData.HighlightedCells.Clear();
+
+			_activePiece = null;
 		}
 	}
 }

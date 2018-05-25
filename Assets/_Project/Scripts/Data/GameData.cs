@@ -4,9 +4,7 @@ namespace ChessProto
 {
 	public struct GameData
 	{
-		public static List<BasePiece> EnemyPieces;
-
-		public static List<BasePiece> PlayerPieces;
+		public static List<BasePiece> Pieces;
 
 		public static List<Cell> Cells;
 
