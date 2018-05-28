@@ -118,8 +118,7 @@ namespace ChessProto
 			if (ChessPieceMoveResetEvent != null) ChessPieceMoveResetEvent();
 
 			// Updating piece position on the board.
-			_column = endCell.Column;
-			_row = endCell.Row;
+			SetPositionIndexes(endCell.Column, endCell.Row);
 
 			transform
 				.DOMove(endCell.transform.position, AnimationDuration)

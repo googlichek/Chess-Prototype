@@ -29,8 +29,8 @@
 
 			FindFreePosition(Column + multiplier, Row);
 
-			FindPosition(Column + multiplier, Row + multiplier, Side);
-			FindPosition(Column + multiplier, Row - multiplier, Side);
+			FindOpponentPosition(Column + multiplier, Row + multiplier, Side);
+			FindOpponentPosition(Column + multiplier, Row - multiplier, Side);
 
 			FindOpponentPosition(Column - multiplier, Row + multiplier, Side);
 			FindOpponentPosition(Column - multiplier, Row - multiplier, Side);
