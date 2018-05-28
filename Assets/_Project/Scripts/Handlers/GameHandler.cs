@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace ChessProto
 {
@@ -9,8 +11,13 @@ namespace ChessProto
 	/// </summary>
 	public class GameHandler : MonoBehaviour
 	{
-		private const string WrongMove = "Wrong move!";
-		private const string WrongSide = "Wrong side!";
+		[Header("Message Variables")]
+		[SerializeField] private Text _message = null;
+		[SerializeField] private Ease _messageSubsequenceEase = Ease.Linear;
+		[SerializeField] [Range(0, 2)] private float _messageSubsequenceDuration = 0f;
+		[SerializeField] private string _start = "Let's Start!";
+		[SerializeField] private string _wrongMove = "Wrong move!";
+		[SerializeField] private string _wrongSide = "Wrong side!";
 
 		private BoardHandler _boardHandler = null;
 		private BasePiece _activePiece = null;
@@ -32,9 +39,51 @@ namespace ChessProto
 
 			_boardHandler = FindObjectOfType<BoardHandler>();
 			_boardHandler.EnableBoardEvent += SubscribeToEvents;
-			_boardHandler.EnablePieceMovementEvent += EnablePieceMovement;
 
 			_activeSide = Side.Player;
+		}
+
+		private void ShowMessage(string message)
+		{
+			if (!_pieceMovementEnabled) return;
+			_pieceMovementEnabled = false;
+
+			_message.text = message;
+			var sequence = CreateMessageAnimationSequence();
+			sequence.Play().OnComplete(() => _pieceMovementEnabled = true);
+		}
+
+		/// <summary>
+		/// Displays message.
+		/// </summary>
+		private Sequence CreateMessageAnimationSequence()
+		{
+			var animationSequence = DOTween.Sequence();
+			animationSequence.Pause();
+
+			var tweener =
+				_message
+					.DOFade(1, _messageSubsequenceDuration)
+					.SetEase(_messageSubsequenceEase);
+			animationSequence.Insert(0, tweener);
+
+			tweener =
+				_message.transform
+					.DOScale(1, _messageSubsequenceDuration)
+					.SetEase(_messageSubsequenceEase);
+			animationSequence.Insert(0, tweener);
+
+			tweener =
+				_message
+					.DOFade(0, _messageSubsequenceDuration)
+					.SetEase(_messageSubsequenceEase)
+					.SetDelay(_messageSubsequenceDuration);
+			animationSequence.Append(tweener);
+
+			tweener = _message.transform.DOScale(0, 0);
+			animationSequence.Append(tweener);
+
+			return animationSequence;
 		}
 
 		private void SubscribeToEvents()
@@ -50,6 +99,8 @@ namespace ChessProto
 
 			// After creating board & pieces it's safe to allow input.
 			_pieceMovementEnabled = true;
+
+			ShowMessage(_start);
 		}
 
 		private void SubscribeToPieceEvents(BasePiece piece)
@@ -66,7 +117,7 @@ namespace ChessProto
 
 			if (_activePiece == null)
 			{
-				IndicateWrongAction(WrongMove);
+				ShowMessage(_wrongMove);
 				return;
 			}
 
@@ -76,7 +127,7 @@ namespace ChessProto
 			}
 			else
 			{
-				IndicateWrongAction(WrongMove);
+				ShowMessage(_wrongMove);
 				ResetBoardActivities();
 			}
 		}
@@ -121,7 +172,7 @@ namespace ChessProto
 			if (!isTargetValid)
 			{
 				piece.Highlight();
-				IndicateWrongAction(WrongSide);
+				ShowMessage(_wrongSide);
 				ResetBoardActivities();
 				return;
 			}
@@ -142,11 +193,6 @@ namespace ChessProto
 
 		}
 
-		private void EnablePieceMovement()
-		{
-			_pieceMovementEnabled = true;
-		}
-
 		/// <summary>
 		/// Tries to set piece for making a move.
 		/// </summary>
@@ -155,7 +201,7 @@ namespace ChessProto
 		{
 			if (_activeSide != piece.Side)
 			{
-				IndicateWrongAction(WrongSide);
+				ShowMessage(_wrongSide);
 				piece.Highlight();
 				return;
 			}
@@ -191,16 +237,6 @@ namespace ChessProto
 					_activeSide = Side.Player;
 					break;
 			}
-		}
-
-		private void IndicateWrongAction(string message)
-		{
-			if (!_pieceMovementEnabled) return;
-
-			_pieceMovementEnabled = false;
-
-			_boardHandler.Message = message;
-			_boardHandler.ShowMessage();
 		}
 	}
 }

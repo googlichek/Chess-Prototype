@@ -12,13 +12,7 @@ namespace ChessProto
 	{
 		public delegate void OnAnimationComplete();
 		public event OnAnimationComplete EnableBoardEvent;
-		public event OnAnimationComplete EnablePieceMovementEvent;
 		private event OnAnimationComplete StartCreationOfSidesEvent;
-
-		/// <summary>
-		/// Message to display in animation sequence.
-		/// </summary>
-		public string Message { set { _message.text = value; } }
 
 		[Header("Cell Placement Variables")]
 		[SerializeField] private Cell _cell = null;
@@ -40,8 +34,6 @@ namespace ChessProto
 
 		[Header("Overall Animation Variables")]
 		[SerializeField] private Text _message = null;
-		[SerializeField] private Ease _messageSubsequenceEase = Ease.Linear;
-		[SerializeField] [Range(0, 2)] private float _messageSubsequenceDuration = 0f;
 		[SerializeField] private Ease _cellMovementEase = Ease.Linear;
 		[SerializeField] [Range(0, 2)] private float _cellMovementDuration = 0f;
 		[SerializeField] [Range(0, 2)] private float _cellMovementDelay = 0f;
@@ -81,41 +73,6 @@ namespace ChessProto
 
 			CreateBoard();
 			StartCreationOfSidesEvent += CreatePieces;
-			EnableBoardEvent += ShowMessage;
-		}
-
-		/// <summary>
-		/// Displays message.
-		/// </summary>
-		public void ShowMessage()
-		{
-			_animationSequence = DOTween.Sequence();
-			_animationSequence.Pause();
-
-			var tweener =
-				_message
-					.DOFade(1, _messageSubsequenceDuration)
-					.SetEase(_messageSubsequenceEase);
-			_animationSequence.Insert(0, tweener);
-
-			tweener =
-				_message.transform
-					.DOScale(1, _messageSubsequenceDuration)
-					.SetEase(_messageSubsequenceEase);
-			_animationSequence.Insert(0, tweener);
-
-			tweener =
-				_message
-					.DOFade(0, _messageSubsequenceDuration)
-					.SetEase(_messageSubsequenceEase)
-					.SetDelay(_messageSubsequenceDuration);
-			_animationSequence.Append(tweener);
-
-			tweener = _message.transform.DOScale(0, 0);
-			_animationSequence.Append(tweener);
-
-			_animationSequence.Play().OnComplete(
-				() => CompleteAnimationEvent(EnablePieceMovementEvent));
 		}
 
 		/// <summary>
