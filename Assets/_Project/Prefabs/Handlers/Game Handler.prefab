@@ -161,8 +161,8 @@ MonoBehaviour:
   _messageSubsequenceEase: 15
   _messageSubsequenceDuration: 0.4
   _start: Let's Start!
-  _wrongMove: Wrong move!
-  _wrongSide: Wrong side!
+  _wrongMove: Wrong Move!
+  _wrongSide: Wrong Side!
 --- !u!222 &222178078410991916
 CanvasRenderer:
   m_ObjectHideFlags: 1
